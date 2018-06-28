@@ -42,7 +42,7 @@ RCPL_CONFIG		= $(shell printf "%04d" $(RCPL))
 endif
 
 # Platform definitions
-BSP		?= air6488
+BSP		?= riu6608
 ROOTFS		?= glibc_small
 KERNEL		?= standard
 BUILD_TYPE	?= production
