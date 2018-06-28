@@ -1,4 +1,10 @@
 
+ECHO	:= @echo -e
+help:
+	$(ECHO) "-- For linux and pboot projects"
+	$(ECHO) " configure - Configure everything"
+	$(ECHO) " all       - Build everything"
+	$(ECHO) " kernel    - Build the kernel"
 
 configure: linux.configure pboot.configure
 
