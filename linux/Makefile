@@ -52,13 +52,14 @@ PKGJOBS		?= 16
 GITROOT         = $(shell git rev-parse --show-toplevel)
 OUTDIR		?= $(TOP)/out
 BUILDDIR	?= $(OUTDIR)/build_$(BSP)_$(KERNEL)_$(ROOTFS)_$(WIND_NAME)
+LAYERDIR	+= $(realpath $(TOP)/../layers)
 
 BSP_GIT		?= git@github.com:DUSg2/meta-wr-zynqmp-bsp.git
 BSP_BRANCH	?= topic/awallin/riu6608
-BSP_REPO	?= $(LAYER_DIR)/meta-wr-zynqmp-bsp
+BSP_REPO	?= $(LAYERDIR)/meta-wr-zynqmp-bsp
 
-LAYER_DIR	+= $(TOP)/../layers
 LAYERS		= $(BSP_REPO)
+#LAYERS		+= $(LAYERDIR)/meta-riu6608
 LAYERS		+= wr-kernel/kernel-dev
 
 

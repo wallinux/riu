@@ -52,13 +52,14 @@ PKGJOBS		?= 16
 GITROOT         = $(shell git rev-parse --show-toplevel)
 OUTDIR		?= $(TOP)/out
 BUILDDIR	?= $(OUTDIR)/build_$(BSP)_$(KERNEL)_$(ROOTFS)_$(WIND_NAME)
+LAYERDIR	+= $(realpath $(TOP)/../layers)
 
 BSP_GIT		?= git@github.com:DUSg2/meta-wr-zynqmp-bsp.git
 BSP_BRANCH	?= topic/awallin/riu6608
-BSP_REPO	?= $(LAYER_DIR)/meta-wr-zynqmp-bsp
+BSP_REPO	?= $(LAYERDIR)/meta-wr-zynqmp-bsp
 
-LAYER_DIR	+= $(TOP)/../layers
 LAYERS		= $(BSP_REPO)
+#LAYERS		+= $(LAYERDIR)/meta-riu6608
 LAYERS		+= wr-kernel/kernel-dev
 
 
@@ -108,7 +109,7 @@ EXTRA_CONFIG_OPTS += --enable-patchresolve=noop
 help::
 	$(ECHO) -e "WIND_VER=$(WIND_VER) RCPL=$(RCPL) BSP=$(BSP) ROOTFS=$(ROOTFS)\n"
 	$(ECHO) "all		- Build everything"
-	$(ECHO) "kernel		- Build the kernel"
+	$(ECHO) "u-boot		- Build u-boot"
 	$(ECHO) "bbs     	- Start a subshell from which you can use bitbake"
 	$(ECHO) "clean		- Remove everything (except installations)"
 	$(ECHO) "distclean	- clean + remove sstate"
@@ -116,7 +117,7 @@ help::
 	$(ECHO)	"sdk		- Build the SDK"
 	$(ECHO)	"sdk.install	- Install the SDK"
 
-.PHONY: all fs sdk sdk.install kernel clean distclean bbs
+.PHONY: all fs sdk sdk.install u-boot clean distclean bbs
 .FORCE:
 
 all: fs sdk
@@ -124,8 +125,22 @@ all: fs sdk
 fs: configure
 	$(MAKE) -C $(BUILDDIR) $@
 
-kernel: configure
-	$(MAKE) -C $(BUILDDIR) virtual/kernel
+u-boot: configure
+	$(MAKE) -C $(BUILDDIR) u-boot-xlnx
+
+packages: configure
+	$(MAKE) -C $(BUILDDIR) arm-trusted-firmware
+	$(MAKE) -C $(BUILDDIR) bootimage-wr
+	$(MAKE) -C $(BUILDDIR) create-ddr-predef-patch
+	$(MAKE) -C $(BUILDDIR) eridisk
+#	$(MAKE) -C $(BUILDDIR) pboot
+#	$(MAKE) -C $(BUILDDIR) pmu-firmware
+	$(MAKE) -C $(BUILDDIR) u-boot-xlnx
+	$(MAKE) -C $(BUILDDIR) zynqmp-platform-init
+#	$(MAKE) -C $(BUILDDIR) devicetree
+#	$(MAKE) -C $(BUILDDIR) virtual/kernel
+	$(MAKE) -C $(BUILDDIR) bootgen
+
 
 sdk: configure
 	$(MAKE) -C $(BUILDDIR) export-sdk
